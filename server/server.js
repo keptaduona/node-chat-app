@@ -17,13 +17,15 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  socket.emit('newMessage', generateMessage('Admin', 'Welsome to the chat app.'));
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app.'));
   // broadcast will send to everyone but this socket
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined.'));
+
   // socket.emit emits to one connection, io.emit emits to all connections
-  socket.on('createMessage', (message) => {
+  socket.on('createMessage', (message, callback) => {
     console.log(message);
     io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('This is from the server.');
   });
   socket.on('disconnect', () => {
     console.log('Disconnected from server');
